@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 620" role="img" aria-labelledby="title desc">
+  <title id="title">SupplyMize - intelligent supply chains, precisely planned</title>
+  <desc id="desc">A professional banner with shipping containers, a demand forecast, and an optimized logistics network in the rust orange and blue SupplyMize theme.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061724"/>
+      <stop offset="0.56" stop-color="#0a2538"/>
+      <stop offset="1" stop-color="#123247"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a9c2d3" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#a9c2d3" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="rust" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d2643d"/>
+      <stop offset="1" stop-color="#8d3922"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#26b1f2"/>
+      <stop offset="1" stop-color="#117dbe"/>
+    </linearGradient>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M50 0H0v50" fill="none" stroke="#a9c2d3" stroke-opacity=".06"/>
+    </pattern>
+    <pattern id="ribs" width="17" height="12" patternUnits="userSpaceOnUse">
+      <path d="M1 0v12" stroke="#fff" stroke-opacity=".09" stroke-width="2"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000" flood-opacity=".28"/>
+    </filter>
+    <filter id="smallShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="7" stdDeviation="10" flood-color="#000" flood-opacity=".2"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="620" rx="28" fill="url(#bg)"/>
+  <rect width="1600" height="360" rx="28" fill="url(#sky)"/>
+  <rect width="1600" height="620" rx="28" fill="url(#grid)"/>
+  <circle cx="1460" cy="85" r="225" fill="#168bd2" opacity=".06"/>
+  <circle cx="1380" cy="570" r="280" fill="#d2643d" opacity=".055"/>
+
+  <!-- container horizon -->
+  <g opacity=".94">
+    <g transform="translate(-68 420)">
+      <rect width="315" height="138" rx="6" fill="url(#rust)"/>
+      <rect width="315" height="138" rx="6" fill="url(#ribs)"/>
+      <rect x="18" y="13" width="279" height="112" rx="3" fill="none" stroke="#f6c0ad" stroke-opacity=".18"/>
+      <path d="M248 15v108M274 15v108" stroke="#44180f" stroke-opacity=".4" stroke-width="4"/>
+    </g>
+    <g transform="translate(184 468)">
+      <rect width="260" height="112" rx="5" fill="#193f55"/>
+      <rect width="260" height="112" rx="5" fill="url(#ribs)"/>
+      <rect x="14" y="12" width="232" height="88" rx="3" fill="none" stroke="#a9c2d3" stroke-opacity=".13"/>
+    </g>
+    <g transform="translate(1220 454)">
+      <rect width="310" height="126" rx="5" fill="url(#rust)"/>
+      <rect width="310" height="126" rx="5" fill="url(#ribs)"/>
+      <rect x="17" y="12" width="276" height="101" rx="3" fill="none" stroke="#ffd1c0" stroke-opacity=".16"/>
+    </g>
+    <g transform="translate(1375 342)">
+      <rect width="270" height="106" rx="5" fill="#153d54"/>
+      <rect width="270" height="106" rx="5" fill="url(#ribs)"/>
+    </g>
+  </g>
+
+  <!-- brand -->
+  <g transform="translate(92 74)">
+    <rect width="58" height="58" rx="17" fill="url(#blue)"/>
+    <path d="m15 39 11-12 8 8 14-19" fill="none" stroke="#071c2c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M39 16h9v9" fill="none" stroke="#071c2c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="76" y="40" fill="#f7fafb" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" letter-spacing="-1.2">SupplyMize</text>
+  </g>
+
+  <!-- headline -->
+  <text x="92" y="224" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="62" font-weight="760" letter-spacing="-2.8">Intelligent supply chains.</text>
+  <text x="92" y="292" fill="#ffffff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="62" font-weight="760" letter-spacing="-2.8">Precisely planned.</text>
+  <text x="96" y="344" fill="#9bb3c1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21">Forecast demand. Optimize every move. Explain every decision.</text>
+  <g transform="translate(94 382)">
+    <rect width="150" height="36" rx="18" fill="#d2643d" fill-opacity=".17" stroke="#d2643d" stroke-opacity=".38"/>
+    <circle cx="20" cy="18" r="5" fill="#d2643d"/>
+    <text x="34" y="23" fill="#f3c0ad" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="650">Forecasting</text>
+    <rect x="164" width="154" height="36" rx="18" fill="#168bd2" fill-opacity=".15" stroke="#168bd2" stroke-opacity=".34"/>
+    <circle cx="184" cy="18" r="5" fill="#26b1f2"/>
+    <text x="198" y="23" fill="#a5dcf6" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="650">Optimization</text>
+    <rect x="332" width="142" height="36" rx="18" fill="#178568" fill-opacity=".14" stroke="#3ba789" stroke-opacity=".3"/>
+    <circle cx="352" cy="18" r="5" fill="#45bd98"/>
+    <text x="366" y="23" fill="#a8decf" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13" font-weight="650">Sustainability</text>
+  </g>
+
+  <!-- product surface -->
+  <g transform="translate(860 94)" filter="url(#shadow)">
+    <rect width="616" height="388" rx="19" fill="#f7f9f9"/>
+    <rect width="616" height="54" rx="19" fill="#ffffff"/>
+    <path d="M0 54h616" stroke="#dce3e6"/>
+    <circle cx="28" cy="27" r="6" fill="#d2643d"/>
+    <circle cx="48" cy="27" r="6" fill="#d9a23e"/>
+    <circle cx="68" cy="27" r="6" fill="#55a986"/>
+    <rect x="448" y="18" width="138" height="19" rx="9.5" fill="#e3f2eb"/>
+    <circle cx="464" cy="27.5" r="4" fill="#29a77d"/>
+    <text x="476" y="32" fill="#3f6f5e" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10" font-weight="650">Network healthy</text>
+    <text x="26" y="90" fill="#77858e" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="1.5">DEMAND INTELLIGENCE</text>
+    <text x="26" y="119" fill="#10202b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">14-day demand forecast</text>
+    <text x="26" y="154" fill="#10202b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="27" font-weight="760">181 units</text>
+    <rect x="144" y="136" width="63" height="23" rx="6" fill="#dff3eb"/>
+    <text x="157" y="152" fill="#178568" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11" font-weight="700">+15.2%</text>
+    <g transform="translate(30 176)">
+      <path d="M0 132H548M0 88H548M0 44H548M0 0H548" fill="none" stroke="#dfe5e7" stroke-width="1"/>
+      <path d="M0 136 66 123 132 129 198 92 264 77 330 86 396 54" fill="none" stroke="#168bd2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M396 54 462 28 520 12" fill="none" stroke="#a94b2d" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/>
+      <path d="M396 54 462 15 520 0 520 40 462 51Z" fill="#a94b2d" opacity=".12"/>
+      <path d="M0 136 66 123 132 129 198 92 264 77 330 86 396 54V150H0Z" fill="#168bd2" opacity=".08"/>
+      <g fill="#fff" stroke="#168bd2" stroke-width="2">
+        <circle cx="0" cy="136" r="4"/><circle cx="66" cy="123" r="4"/><circle cx="132" cy="129" r="4"/><circle cx="198" cy="92" r="4"/><circle cx="264" cy="77" r="4"/><circle cx="330" cy="86" r="4"/><circle cx="396" cy="54" r="4"/>
+      </g>
+      <g fill="#fff" stroke="#a94b2d" stroke-width="2">
+        <circle cx="462" cy="28" r="4"/><circle cx="520" cy="12" r="4"/>
+      </g>
+    </g>
+    <g transform="translate(24 342)">
+      <rect width="170" height="28" rx="6" fill="#eef4f6"/>
+      <circle cx="14" cy="14" r="4" fill="#168bd2"/>
+      <text x="25" y="18" fill="#5f707a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10">Seasonality <tspan font-weight="700">+8.1%</tspan></text>
+      <rect x="181" width="154" height="28" rx="6" fill="#f6ebe7"/>
+      <circle cx="195" cy="14" r="4" fill="#a94b2d"/>
+      <text x="206" y="18" fill="#6f554b" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10">Weather <tspan font-weight="700">+4.7%</tspan></text>
+    </g>
+  </g>
+
+  <!-- floating score card -->
+  <g transform="translate(1282 438)" filter="url(#smallShadow)">
+    <rect width="234" height="104" rx="14" fill="#0a2739" stroke="#315064"/>
+    <circle cx="31" cy="30" r="13" fill="#168bd2" fill-opacity=".2"/>
+    <path d="m25 30 4 4 8-10" fill="none" stroke="#4ab8ed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="53" y="28" fill="#88a0ae" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="10">Forecast confidence</text>
+    <text x="53" y="46" fill="#fff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18" font-weight="750">93.8%</text>
+    <path d="M22 74h190" stroke="#294355"/>
+    <text x="22" y="91" fill="#65c4a4" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="11" font-weight="650">$128.4k planned savings</text>
+  </g>
+
+  <text x="96" y="584" fill="#7592a3" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="12" letter-spacing=".7">GO · PYTHON · RUST · TYPESCRIPT</text>
+</svg>

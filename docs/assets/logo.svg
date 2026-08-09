@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" role="img" aria-labelledby="title desc">
+  <title id="title">SupplyMize</title>
+  <desc id="desc">SupplyMize logo with an upward optimization path.</desc>
+  <rect width="320" height="80" rx="18" fill="#071c2c"/>
+  <rect x="18" y="16" width="48" height="48" rx="14" fill="#20a8ed"/>
+  <path d="m29 49 9-10 7 7 12-16" fill="none" stroke="#071c2c" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M49 30h8v8" fill="none" stroke="#071c2c" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="82" y="50" fill="#f7fafb" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="30" font-weight="700" letter-spacing="-1">SupplyMize</text>
+</svg>

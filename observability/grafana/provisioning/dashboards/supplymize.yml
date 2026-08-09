@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: SupplyMize
+    orgId: 1
+    folder: SupplyMize
+    type: file
+    disableDeletion: true
+    editable: false
+    options:
+      path: /var/lib/grafana/dashboards

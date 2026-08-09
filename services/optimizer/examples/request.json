@@ -1,0 +1,81 @@
+{
+  "sku": "FILTER-HEPA-01",
+  "currency": "USD",
+  "carbon_price_per_kg": 0.15,
+  "lost_sale_penalty": 18.0,
+  "average_storage_days": 2.0,
+  "suppliers": [
+    {
+      "id": "supplier-west",
+      "capacity_units": 900.0
+    },
+    {
+      "id": "supplier-central",
+      "capacity_units": 650.0
+    }
+  ],
+  "warehouses": [
+    {
+      "id": "dc-seattle",
+      "capacity_units": 1000.0,
+      "storage_cost_per_unit_day": 0.04
+    },
+    {
+      "id": "dc-denver",
+      "capacity_units": 700.0,
+      "storage_cost_per_unit_day": 0.035
+    }
+  ],
+  "lanes": [
+    {
+      "id": "west-seattle",
+      "supplier_id": "supplier-west",
+      "warehouse_id": "dc-seattle",
+      "distance_km": 280.0,
+      "transport_cost_per_unit_km": 0.0021,
+      "carbon_kg_per_unit_km": 0.00012,
+      "truck_capacity_units": 250.0,
+      "max_trucks": 4
+    },
+    {
+      "id": "west-denver",
+      "supplier_id": "supplier-west",
+      "warehouse_id": "dc-denver",
+      "distance_km": 1650.0,
+      "transport_cost_per_unit_km": 0.0022,
+      "carbon_kg_per_unit_km": 0.00013,
+      "truck_capacity_units": 250.0,
+      "max_trucks": 2
+    },
+    {
+      "id": "central-seattle",
+      "supplier_id": "supplier-central",
+      "warehouse_id": "dc-seattle",
+      "distance_km": 2100.0,
+      "transport_cost_per_unit_km": 0.0019,
+      "carbon_kg_per_unit_km": 0.0001,
+      "truck_capacity_units": 220.0,
+      "max_trucks": 2
+    },
+    {
+      "id": "central-denver",
+      "supplier_id": "supplier-central",
+      "warehouse_id": "dc-denver",
+      "distance_km": 410.0,
+      "transport_cost_per_unit_km": 0.0019,
+      "carbon_kg_per_unit_km": 0.0001,
+      "truck_capacity_units": 220.0,
+      "max_trucks": 3
+    }
+  ],
+  "demand": [
+    {
+      "warehouse_id": "dc-seattle",
+      "units": 850.0
+    },
+    {
+      "warehouse_id": "dc-denver",
+      "units": 600.0
+    }
+  ]
+}

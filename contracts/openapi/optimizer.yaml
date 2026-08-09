@@ -1,0 +1,415 @@
+openapi: 3.1.0
+info:
+  title: SupplyMize Optimizer API
+  version: 0.1.0
+  description: >-
+    Explainable single-SKU supply-chain network optimization. The model
+    minimizes transport, storage, lost-sales, and monetized carbon cost under
+    supplier, warehouse, and truck-lane capacities.
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8002
+tags:
+  - name: Optimization
+  - name: Operations
+paths:
+  /v1/optimize:
+    post:
+      tags: [Optimization]
+      operationId: optimizeNetwork
+      summary: Find the globally optimal continuous network allocation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptimizationRequest'
+            example:
+              sku: FILTER-HEPA-01
+              currency: USD
+              carbon_price_per_kg: 0.15
+              lost_sale_penalty: 18
+              average_storage_days: 2
+              suppliers:
+                - id: supplier-west
+                  capacity_units: 900
+                - id: supplier-central
+                  capacity_units: 650
+              warehouses:
+                - id: dc-seattle
+                  capacity_units: 1000
+                  storage_cost_per_unit_day: 0.04
+                - id: dc-denver
+                  capacity_units: 700
+                  storage_cost_per_unit_day: 0.035
+              lanes:
+                - id: west-seattle
+                  supplier_id: supplier-west
+                  warehouse_id: dc-seattle
+                  distance_km: 280
+                  transport_cost_per_unit_km: 0.0021
+                  carbon_kg_per_unit_km: 0.00012
+                  truck_capacity_units: 250
+                  max_trucks: 4
+                - id: central-denver
+                  supplier_id: supplier-central
+                  warehouse_id: dc-denver
+                  distance_km: 410
+                  transport_cost_per_unit_km: 0.0019
+                  carbon_kg_per_unit_km: 0.0001
+                  truck_capacity_units: 220
+                  max_trucks: 3
+              demand:
+                - warehouse_id: dc-seattle
+                  units: 850
+                - warehouse_id: dc-denver
+                  units: 600
+      responses:
+        '200':
+          description: Optimal model result. `partial` indicates economically or capacity-driven unfulfilled demand.
+          headers:
+            x-request-id:
+              description: Correlation identifier matching the response body.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptimizationResponse'
+        '400':
+          description: Malformed JSON or incompatible JSON shape.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
+          description: Request body exceeds the configured limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: The network is structurally or numerically invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Unexpected solver failure.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /healthz:
+    get:
+      tags: [Operations]
+      operationId: liveness
+      summary: Process liveness probe
+      responses:
+        '200':
+          description: Process is alive.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /readyz:
+    get:
+      tags: [Operations]
+      operationId: readiness
+      summary: Traffic readiness probe
+      responses:
+        '200':
+          description: Optimizer is ready to accept work.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /metrics:
+    get:
+      tags: [Operations]
+      operationId: prometheusMetrics
+      summary: Prometheus text exposition
+      responses:
+        '200':
+          description: Process and optimization counters.
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    OptimizationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - sku
+        - suppliers
+        - warehouses
+        - lanes
+        - demand
+        - lost_sale_penalty
+        - carbon_price_per_kg
+      properties:
+        sku:
+          $ref: '#/components/schemas/Identifier'
+        suppliers:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/Supplier'
+        warehouses:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/Warehouse'
+        lanes:
+          type: array
+          maxItems: 10000
+          items:
+            $ref: '#/components/schemas/Lane'
+        demand:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          items:
+            $ref: '#/components/schemas/Demand'
+        lost_sale_penalty:
+          type: number
+          minimum: 0
+          description: Opportunity cost per unfulfilled unit.
+        carbon_price_per_kg:
+          type: number
+          minimum: 0
+          description: Internal currency cost for one kg CO2e.
+        average_storage_days:
+          type: number
+          minimum: 0
+          default: 1
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+          default: USD
+    Supplier:
+      type: object
+      additionalProperties: false
+      required: [id, capacity_units]
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        capacity_units:
+          type: number
+          minimum: 0
+    Warehouse:
+      type: object
+      additionalProperties: false
+      required: [id, capacity_units, storage_cost_per_unit_day]
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        capacity_units:
+          type: number
+          minimum: 0
+        storage_cost_per_unit_day:
+          type: number
+          minimum: 0
+    Lane:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - supplier_id
+        - warehouse_id
+        - distance_km
+        - transport_cost_per_unit_km
+        - carbon_kg_per_unit_km
+        - truck_capacity_units
+        - max_trucks
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        supplier_id:
+          $ref: '#/components/schemas/Identifier'
+        warehouse_id:
+          $ref: '#/components/schemas/Identifier'
+        distance_km:
+          type: number
+          exclusiveMinimum: 0
+        transport_cost_per_unit_km:
+          type: number
+          minimum: 0
+        carbon_kg_per_unit_km:
+          type: number
+          minimum: 0
+        truck_capacity_units:
+          type: number
+          exclusiveMinimum: 0
+        max_trucks:
+          type: integer
+          minimum: 1
+    Demand:
+      type: object
+      additionalProperties: false
+      required: [warehouse_id, units]
+      properties:
+        warehouse_id:
+          $ref: '#/components/schemas/Identifier'
+        units:
+          type: number
+          exclusiveMinimum: 0
+    OptimizationResponse:
+      type: object
+      required:
+        - request_id
+        - status
+        - sku
+        - currency
+        - fulfilled_demand
+        - unfulfilled_demand
+        - costs
+        - carbon_kg
+        - allocations
+        - suppliers
+        - warehouses
+        - explanations
+        - solver
+      properties:
+        request_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: '^[A-Za-z0-9._:-]+$'
+        status:
+          type: string
+          enum: [optimal, partial]
+        sku:
+          type: string
+        currency:
+          type: string
+        fulfilled_demand:
+          type: number
+        unfulfilled_demand:
+          type: number
+        costs:
+          $ref: '#/components/schemas/CostBreakdown'
+        carbon_kg:
+          type: number
+        allocations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Allocation'
+        suppliers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SupplierResult'
+        warehouses:
+          type: array
+          items:
+            $ref: '#/components/schemas/WarehouseResult'
+        explanations:
+          type: array
+          items:
+            type: string
+        solver:
+          $ref: '#/components/schemas/SolverMetadata'
+    CostBreakdown:
+      type: object
+      required: [transport, storage, lost_sales, carbon, total]
+      properties:
+        transport: { type: number }
+        storage: { type: number }
+        lost_sales: { type: number }
+        carbon: { type: number }
+        total: { type: number }
+    Allocation:
+      type: object
+      required:
+        - lane_id
+        - supplier_id
+        - warehouse_id
+        - units
+        - trucks
+        - capacity_utilization
+        - carbon_kg
+        - costs
+      properties:
+        lane_id: { type: string }
+        supplier_id: { type: string }
+        warehouse_id: { type: string }
+        units: { type: number }
+        trucks: { type: integer }
+        capacity_utilization: { type: number, minimum: 0, maximum: 1 }
+        carbon_kg: { type: number }
+        costs:
+          $ref: '#/components/schemas/CostBreakdown'
+    SupplierResult:
+      type: object
+      required: [supplier_id, allocated_units, capacity_units, capacity_utilization, binding]
+      properties:
+        supplier_id: { type: string }
+        allocated_units: { type: number }
+        capacity_units: { type: number }
+        capacity_utilization: { type: number, minimum: 0, maximum: 1 }
+        binding: { type: boolean }
+    WarehouseResult:
+      type: object
+      required:
+        - warehouse_id
+        - demand_units
+        - fulfilled_units
+        - unfulfilled_units
+        - received_units
+        - capacity_units
+        - capacity_utilization
+        - binding
+      properties:
+        warehouse_id: { type: string }
+        demand_units: { type: number }
+        fulfilled_units: { type: number }
+        unfulfilled_units: { type: number }
+        received_units: { type: number }
+        capacity_units: { type: number }
+        capacity_utilization: { type: number, minimum: 0, maximum: 1 }
+        binding: { type: boolean }
+    SolverMetadata:
+      type: object
+      required: [algorithm, model, solve_time_ms, globally_optimal]
+      properties:
+        algorithm: { type: string }
+        model: { type: string }
+        solve_time_ms: { type: number }
+        globally_optimal: { type: boolean }
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string }
+            message: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                required: [field, code, message]
+                properties:
+                  field: { type: string }
+                  code: { type: string }
+                  message: { type: string }
+    HealthResponse:
+      type: object
+      required: [status, service, version]
+      properties:
+        status: { type: string }
+        service: { type: string }
+        version: { type: string }
+    Identifier:
+      type: string
+      minLength: 1
+      maxLength: 128
+      pattern: '^[A-Za-z0-9._-]+$'
