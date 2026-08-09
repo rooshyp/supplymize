@@ -17,3 +17,4 @@ target/
 bin/
 tmp/
 *.log
+.vercel/
