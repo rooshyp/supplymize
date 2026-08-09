@@ -1,0 +1,16 @@
+.git
+.github
+.env
+**/.env
+**/.DS_Store
+**/node_modules
+**/dist
+**/.venv
+**/.pytest_cache
+**/.ruff_cache
+**/__pycache__
+**/*.pyc
+**/target
+**/.tooling
+**/*.tsbuildinfo
+work-hero-preview.png

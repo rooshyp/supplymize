@@ -1,0 +1,34 @@
+name: Feature request
+description: Propose a measurable product or engineering capability.
+title: "[Feature]: "
+labels: [enhancement, triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Planning problem
+      description: What decision is difficult today, and for whom?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the behavior and how success should be measured.
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints and alternatives
+      description: Include relevant scale, latency, explainability, or integration constraints.
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Affected boundaries
+      options:
+        - label: Public API contract
+        - label: Forecast model
+        - label: Optimization objective or constraints
+        - label: User experience
+        - label: Deployment or operations

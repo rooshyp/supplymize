@@ -1,0 +1,35 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      web:
+        patterns: ["*"]
+
+  - package-ecosystem: gomod
+    directory: /services/control-plane
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: pip
+    directory: /services/forecasting
+    schedule:
+      interval: weekly
+    groups:
+      forecasting:
+        patterns: ["*"]
+
+  - package-ecosystem: cargo
+    directory: /services/optimizer
+    schedule:
+      interval: weekly
+    groups:
+      optimizer:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

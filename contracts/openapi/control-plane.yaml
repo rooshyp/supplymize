@@ -1,0 +1,503 @@
+openapi: 3.1.0
+info:
+  title: SupplyMize Control Plane API
+  version: 0.1.0
+  summary: Forecast-backed, carbon-aware supply planning.
+  description: >-
+    The public SupplyMize boundary. A planning request is validated, forecast by
+    the Python service, optimized by the Rust service, and returned with one
+    request identifier and an explainable cost and carbon breakdown.
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Planning
+  - name: Operations
+paths:
+  /v1/plans:
+    post:
+      tags: [Planning]
+      operationId: createSupplyPlan
+      summary: Create an explainable supply plan
+      parameters:
+        - $ref: '#/components/parameters/RequestID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanRequest'
+      responses:
+        '200':
+          description: Forecast and optimized allocation completed.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/RequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplyPlan'
+        '400':
+          $ref: '#/components/responses/InvalidJSON'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '502':
+          $ref: '#/components/responses/DependencyFailure'
+        '503':
+          $ref: '#/components/responses/DependencyUnavailable'
+        '504':
+          $ref: '#/components/responses/PlanningTimeout'
+  /healthz:
+    get:
+      tags: [Operations]
+      operationId: liveness
+      summary: Process liveness probe
+      responses:
+        '200':
+          description: Process is alive.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /readyz:
+    get:
+      tags: [Operations]
+      operationId: readiness
+      summary: Forecasting and optimizer readiness
+      responses:
+        '200':
+          description: All required downstream services are ready.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+        '503':
+          description: At least one dependency is unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessResponse'
+  /metrics:
+    get:
+      tags: [Operations]
+      operationId: prometheusMetrics
+      summary: Prometheus text exposition
+      responses:
+        '200':
+          description: HTTP and planning counters.
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  parameters:
+    RequestID:
+      name: X-Request-ID
+      in: header
+      required: false
+      description: Optional printable correlation ID; a secure value is generated when absent.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+  headers:
+    RequestID:
+      description: Correlation ID propagated across the entire planning request.
+      schema:
+        type: string
+  responses:
+    InvalidJSON:
+      description: Malformed JSON, multiple JSON values, or an unknown property.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    RequestTooLarge:
+      description: Request exceeds the configured byte limit.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    UnsupportedMediaType:
+      description: Content-Type is not application/json.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    ValidationFailed:
+      description: One or more domain fields are invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    DependencyFailure:
+      description: A downstream service returned an unusable result.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    DependencyUnavailable:
+      description: A downstream service is temporarily unavailable.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    PlanningTimeout:
+      description: The end-to-end planning deadline expired.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  schemas:
+    PlanRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - sku
+        - horizon
+        - history
+        - network
+        - lost_sale_penalty
+        - carbon_price_per_kg
+      properties:
+        sku:
+          $ref: '#/components/schemas/Identifier'
+        horizon:
+          type: integer
+          minimum: 1
+          maximum: 365
+          description: Number of future daily planning periods.
+        history:
+          type: array
+          minItems: 7
+          maxItems: 10000
+          items:
+            $ref: '#/components/schemas/DemandObservation'
+        signals:
+          $ref: '#/components/schemas/PlanningSignals'
+        network:
+          $ref: '#/components/schemas/SupplyNetwork'
+        lost_sale_penalty:
+          type: number
+          minimum: 0
+          description: Opportunity cost per unit of unfulfilled demand.
+        carbon_price_per_kg:
+          type: number
+          minimum: 0
+          description: Internal currency cost for one kg CO2e.
+    DemandObservation:
+      type: object
+      additionalProperties: false
+      required: [period, units]
+      properties:
+        period:
+          type: string
+          minLength: 1
+          description: Unique ISO date, ISO week, or other ordered business period.
+        units:
+          type: number
+          minimum: 0
+    PlanningSignals:
+      type: object
+      additionalProperties: false
+      properties:
+        trend:
+          type: number
+          minimum: -0.25
+          maximum: 0.25
+          default: 0
+        seasonality:
+          type: array
+          minItems: 2
+          maxItems: 366
+          items:
+            type: number
+            exclusiveMinimum: 0
+            maximum: 5
+        weather:
+          type: number
+          minimum: -1
+          maximum: 1
+          default: 0
+        event:
+          type: number
+          minimum: -1
+          maximum: 1
+          default: 0
+        supplier_speed:
+          type: number
+          minimum: -1
+          maximum: 1
+          default: 0
+    SupplyNetwork:
+      type: object
+      additionalProperties: false
+      required: [nodes, lanes]
+      properties:
+        nodes:
+          type: array
+          minItems: 2
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/SupplyNode'
+        lanes:
+          type: array
+          minItems: 1
+          maxItems: 10000
+          items:
+            $ref: '#/components/schemas/SupplyLane'
+    SupplyNode:
+      type: object
+      additionalProperties: false
+      required: [id, type, capacity, available]
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          type: string
+          description: Supplier/factory/plant or warehouse/distribution center/store.
+        capacity:
+          type: number
+          minimum: 0
+        available:
+          type: number
+          minimum: 0
+        demand_share:
+          type: number
+          minimum: 0
+          maximum: 1
+        storage_cost_per_unit_day:
+          type: number
+          minimum: 0
+    SupplyLane:
+      type: object
+      additionalProperties: false
+      required:
+        - from
+        - to
+        - capacity
+        - unit_cost
+        - lead_time_periods
+        - carbon_kg_per_unit
+      properties:
+        from:
+          $ref: '#/components/schemas/Identifier'
+        to:
+          $ref: '#/components/schemas/Identifier'
+        capacity:
+          type: number
+          exclusiveMinimum: 0
+        unit_cost:
+          type: number
+          minimum: 0
+        lead_time_periods:
+          type: integer
+          minimum: 0
+          maximum: 365
+        carbon_kg_per_unit:
+          type: number
+          minimum: 0
+    SupplyPlan:
+      type: object
+      additionalProperties: false
+      required: [plan_id, request_id, sku, generated_at, forecast, optimization]
+      properties:
+        plan_id:
+          type: string
+        request_id:
+          type: string
+        sku:
+          type: string
+        generated_at:
+          type: string
+          format: date-time
+        forecast:
+          $ref: '#/components/schemas/Forecast'
+        optimization:
+          $ref: '#/components/schemas/Optimization'
+    Forecast:
+      type: object
+      additionalProperties: false
+      required: [model, total_demand, confidence, points]
+      properties:
+        model:
+          type: string
+        total_demand:
+          type: number
+          minimum: 0
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        points:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ForecastPoint'
+    ForecastPoint:
+      type: object
+      additionalProperties: false
+      required: [period, demand, lower_bound, upper_bound]
+      properties:
+        period:
+          type: string
+        demand:
+          type: number
+          minimum: 0
+        lower_bound:
+          type: number
+          minimum: 0
+        upper_bound:
+          type: number
+          minimum: 0
+    Optimization:
+      type: object
+      additionalProperties: false
+      required:
+        - allocations
+        - fulfilled_demand
+        - unfulfilled_demand
+        - costs
+        - carbon_kg
+        - explanations
+      properties:
+        allocations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Allocation'
+        fulfilled_demand:
+          type: number
+          minimum: 0
+        unfulfilled_demand:
+          type: number
+          minimum: 0
+        costs:
+          $ref: '#/components/schemas/CostBreakdown'
+        carbon_kg:
+          type: number
+          minimum: 0
+        explanations:
+          type: array
+          items:
+            type: string
+    Allocation:
+      type: object
+      additionalProperties: false
+      required: [from, to, quantity, unit_cost, carbon_kg]
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+        quantity:
+          type: number
+          minimum: 0
+        unit_cost:
+          type: number
+          minimum: 0
+        carbon_kg:
+          type: number
+          minimum: 0
+        period:
+          type: string
+        reason:
+          type: string
+    CostBreakdown:
+      type: object
+      additionalProperties: false
+      required: [procurement, transport, holding, lost_sales, carbon, total]
+      properties:
+        procurement:
+          type: number
+          minimum: 0
+        transport:
+          type: number
+          minimum: 0
+        holding:
+          type: number
+          minimum: 0
+        lost_sales:
+          type: number
+          minimum: 0
+        carbon:
+          type: number
+          minimum: 0
+        total:
+          type: number
+          minimum: 0
+    FieldViolation:
+      type: object
+      additionalProperties: false
+      required: [field, message]
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+    ErrorEnvelope:
+      type: object
+      additionalProperties: false
+      required: [error, request_id]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum:
+                - invalid_json
+                - request_too_large
+                - unsupported_media_type
+                - validation_failed
+                - dependency_failure
+                - dependency_unavailable
+                - planning_timeout
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                $ref: '#/components/schemas/FieldViolation'
+        request_id:
+          type: string
+    HealthResponse:
+      type: object
+      additionalProperties: false
+      required: [status, service, version]
+      properties:
+        status:
+          const: ok
+        service:
+          const: control-plane
+        version:
+          type: string
+    ReadinessResponse:
+      type: object
+      additionalProperties: false
+      required: [status, service, checks]
+      properties:
+        status:
+          type: string
+          enum: [ready, not_ready]
+        service:
+          const: control-plane
+        checks:
+          type: object
+          additionalProperties:
+            type: object
+            required: [status]
+            properties:
+              status:
+                type: string
+                enum: [up, down]
+    Identifier:
+      type: string
+      minLength: 1
+      maxLength: 128

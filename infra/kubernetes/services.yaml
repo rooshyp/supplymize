@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: console
+spec:
+  selector:
+    app.kubernetes.io/name: console
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: control-plane
+spec:
+  selector:
+    app.kubernetes.io/name: control-plane
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forecasting
+spec:
+  selector:
+    app.kubernetes.io/name: forecasting
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: optimizer
+spec:
+  selector:
+    app.kubernetes.io/name: optimizer
+  ports:
+    - name: http
+      port: 8082
+      targetPort: http

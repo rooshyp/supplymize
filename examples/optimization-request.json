@@ -1,0 +1,59 @@
+{
+  "sku": "SM-1042",
+  "suppliers": [
+    { "id": "pacific-footwear", "capacity_units": 850 },
+    { "id": "sierramade", "capacity_units": 420 }
+  ],
+  "warehouses": [
+    {
+      "id": "oakland-dc",
+      "capacity_units": 780,
+      "storage_cost_per_unit_day": 0.18
+    },
+    {
+      "id": "reno-dc",
+      "capacity_units": 620,
+      "storage_cost_per_unit_day": 0.12
+    }
+  ],
+  "lanes": [
+    {
+      "id": "pacific-oakland",
+      "supplier_id": "pacific-footwear",
+      "warehouse_id": "oakland-dc",
+      "distance_km": 42,
+      "transport_cost_per_unit_km": 0.024,
+      "carbon_kg_per_unit_km": 0.0042,
+      "truck_capacity_units": 180,
+      "max_trucks": 4
+    },
+    {
+      "id": "pacific-reno",
+      "supplier_id": "pacific-footwear",
+      "warehouse_id": "reno-dc",
+      "distance_km": 320,
+      "transport_cost_per_unit_km": 0.011,
+      "carbon_kg_per_unit_km": 0.0028,
+      "truck_capacity_units": 180,
+      "max_trucks": 3
+    },
+    {
+      "id": "sierramade-reno",
+      "supplier_id": "sierramade",
+      "warehouse_id": "reno-dc",
+      "distance_km": 64,
+      "transport_cost_per_unit_km": 0.019,
+      "carbon_kg_per_unit_km": 0.0035,
+      "truck_capacity_units": 140,
+      "max_trucks": 3
+    }
+  ],
+  "demand": [
+    { "warehouse_id": "oakland-dc", "units": 710 },
+    { "warehouse_id": "reno-dc", "units": 490 }
+  ],
+  "lost_sale_penalty": 18,
+  "carbon_price_per_kg": 0.07,
+  "average_storage_days": 4,
+  "currency": "USD"
+}

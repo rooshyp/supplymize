@@ -1,0 +1,40 @@
+name: Bug report
+description: Report a reproducible problem in SupplyMize.
+title: "[Bug]: "
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping improve SupplyMize. Do not include secrets or customer data.
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What planner, workflow, or service is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: Provide the smallest deterministic example you can.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v0.1.0 or commit SHA
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options: [Console, Control plane, Forecasting, Optimizer, Infrastructure, Documentation]
+    validations:
+      required: true

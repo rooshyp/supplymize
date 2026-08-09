@@ -1,0 +1,16 @@
+{
+  "name": "supplymize",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-native demand forecasting and supply chain optimization platform.",
+  "packageManager": "pnpm@11.16.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @supplymize/console dev",
+    "build": "pnpm -r --if-present build",
+    "test": "pnpm -r --if-present test",
+    "check": "pnpm test && pnpm build"
+  }
+}

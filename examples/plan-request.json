@@ -1,0 +1,87 @@
+{
+  "sku": "SM-1042",
+  "horizon": 7,
+  "history": [
+    { "period": "2026-07-26", "units": 138 },
+    { "period": "2026-07-27", "units": 142 },
+    { "period": "2026-07-28", "units": 139 },
+    { "period": "2026-07-29", "units": 147 },
+    { "period": "2026-07-30", "units": 151 },
+    { "period": "2026-07-31", "units": 149 },
+    { "period": "2026-08-01", "units": 156 },
+    { "period": "2026-08-02", "units": 158 },
+    { "period": "2026-08-03", "units": 161 },
+    { "period": "2026-08-04", "units": 164 },
+    { "period": "2026-08-05", "units": 160 },
+    { "period": "2026-08-06", "units": 168 },
+    { "period": "2026-08-07", "units": 171 },
+    { "period": "2026-08-08", "units": 169 }
+  ],
+  "signals": {
+    "trend": 0.012,
+    "seasonality": [0.92, 0.97, 1.01, 1.05, 1.09, 1.12, 0.84],
+    "weather": 0.08,
+    "event": 0.14,
+    "supplier_speed": -0.06
+  },
+  "network": {
+    "nodes": [
+      {
+        "id": "pacific-footwear",
+        "type": "supplier",
+        "capacity": 850,
+        "available": 820
+      },
+      {
+        "id": "sierramade",
+        "type": "supplier",
+        "capacity": 420,
+        "available": 390
+      },
+      {
+        "id": "oakland-dc",
+        "type": "warehouse",
+        "capacity": 780,
+        "available": 610,
+        "demand_share": 0.6,
+        "storage_cost_per_unit_day": 0.18
+      },
+      {
+        "id": "reno-dc",
+        "type": "warehouse",
+        "capacity": 620,
+        "available": 530,
+        "demand_share": 0.4,
+        "storage_cost_per_unit_day": 0.12
+      }
+    ],
+    "lanes": [
+      {
+        "from": "pacific-footwear",
+        "to": "oakland-dc",
+        "capacity": 720,
+        "unit_cost": 1.01,
+        "lead_time_periods": 2,
+        "carbon_kg_per_unit": 0.176
+      },
+      {
+        "from": "pacific-footwear",
+        "to": "reno-dc",
+        "capacity": 540,
+        "unit_cost": 3.52,
+        "lead_time_periods": 3,
+        "carbon_kg_per_unit": 0.896
+      },
+      {
+        "from": "sierramade",
+        "to": "reno-dc",
+        "capacity": 420,
+        "unit_cost": 1.22,
+        "lead_time_periods": 1,
+        "carbon_kg_per_unit": 0.224
+      }
+    ]
+  },
+  "lost_sale_penalty": 18,
+  "carbon_price_per_kg": 0.07
+}
